@@ -1,21 +1,25 @@
 package com.dnovoa.deluge.repository.data.api
 
+import com.dnovoa.deluge.repository.data.api.model.DelugeLoginRequestDto
 import io.ktor.client.HttpClient
 import io.ktor.client.request.post
 import io.ktor.content.TextContent
 import io.ktor.http.ContentType
 import io.ktor.http.URLBuilder
+import kotlinx.coroutines.flow.Flow
 
 class DelugeApiService(private val httpClient: HttpClient) {
 
-    suspend fun login(): String {
+    suspend fun login(): Flow<String> {
+
         return HttpClient().use {
             httpClient.post(
                 url = URLBuilder(host = BASE_URL, port = 8112, encodedPath = "/json").build()
             ) {
-                body = TextContent(
-                    "{method: \"auth.login\", params: [\"0ipshahto\"], id: 1}",
-                    contentType = ContentType.Text.Plain
+                body = DelugeLoginRequestDto(
+                    method = "auth.login",
+                    params = "[0ipshahto]",
+                    id = "1"
                 )
             }
         }
