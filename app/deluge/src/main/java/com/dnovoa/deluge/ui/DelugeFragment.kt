@@ -8,10 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.dnovoa.deluge.R
 import com.dnovoa.deluge.databinding.DelugeFragmentBinding
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class DelugeFragment : Fragment() {
