@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MediaManager</string>
+    <string name="title_delugefeature">Deluge Module</string>
 </resources>
