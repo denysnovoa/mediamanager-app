@@ -7,12 +7,12 @@ import io.ktor.content.TextContent
 import io.ktor.http.ContentType
 import io.ktor.http.URLBuilder
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class DelugeApiService(private val httpClient: HttpClient) {
 
-    suspend fun login(): Flow<String> {
-
-        return HttpClient().use {
+    suspend fun login(): String =
+        HttpClient().use {
             httpClient.post(
                 url = URLBuilder(host = BASE_URL, port = 8112, encodedPath = "/json").build()
             ) {
@@ -23,7 +23,6 @@ class DelugeApiService(private val httpClient: HttpClient) {
                 )
             }
         }
-    }
 }
 
 val BASE_URL = "http://192.168.1.144"

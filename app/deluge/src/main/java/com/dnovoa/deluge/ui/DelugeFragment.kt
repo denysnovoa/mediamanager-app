@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.dnovoa.deluge.R
+import com.dnovoa.deluge.databinding.DelugeFragmentBinding
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -21,22 +22,29 @@ class DelugeFragment : Fragment() {
 
     private val viewModel by viewModels<DelugeViewModel>()
 
+    private var _binding: DelugeFragmentBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.deluge_fragment, container, false)
+        _binding = DelugeFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         lifecycleScope.launch {
-            viewModel.login()
-                .catch { exception -> notifyError(exception) }
-                .collect { text ->
-                    Toast.makeText(requireContext(), text, Toast.LENGTH_LONG).show()
-                }
+            val text = viewModel.login()
+            binding.message.text = text
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun notifyError(exception: Throwable) {
