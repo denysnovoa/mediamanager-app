@@ -7,7 +7,7 @@ import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.request.header
 
-private val okHttpKtor = HttpClient(CIO) {
+val okHttpKtor = HttpClient(CIO) {
     install(JsonFeature) {
         serializer = KotlinxSerializer()
     }
