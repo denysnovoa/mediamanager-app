@@ -1,3 +1,4 @@
+include ':app:deluge'
 include ':delugefeature'
 include ':app'
 rootProject.name = "MediaManager"

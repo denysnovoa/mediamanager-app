@@ -1,4 +1,4 @@
-package com.dnovoa.mediamanager.ui.deluge
+package com.dnovoa.deluge.ui
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle

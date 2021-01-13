@@ -2,7 +2,7 @@ package com.dnovoa.mediamanager
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.dnovoa.mediamanager.ui.deluge.DelugeFragment
+import com.dnovoa.deluge.ui.DelugeFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_activity)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, DelugeFragment.newInstance())
+                    .replace(R.id.container, com.dnovoa.deluge.ui.DelugeFragment.newInstance())
                     .commitNow()
         }
     }
