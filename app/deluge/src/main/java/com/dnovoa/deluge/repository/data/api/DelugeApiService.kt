@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.flow
 
 class DelugeApiService(private val httpClient: HttpClient) {
 
-    @KtorExperimentalAPI
     suspend fun login(): String {
         val response = httpClient.get<String> {
             url {

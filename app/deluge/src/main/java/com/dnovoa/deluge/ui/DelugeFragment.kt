@@ -33,9 +33,12 @@ class DelugeFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        lifecycleScope.launch {
-            val text = viewModel.login()
-            binding.message.text = text
+
+        binding.delugeLogin.setOnClickListener {
+            lifecycleScope.launch {
+                val text = viewModel.login()
+                binding.message.text = text
+            }
         }
     }
 
