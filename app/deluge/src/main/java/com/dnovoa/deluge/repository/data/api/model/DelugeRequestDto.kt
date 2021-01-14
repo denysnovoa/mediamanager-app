@@ -27,6 +27,12 @@ sealed class DelugeRequestDto {
         override val id: String,
         val params: ArrayList<List<String>>
     ) : DelugeRequestDto()
-}
 
-//                                    "max_upload_speed",
+    @Serializable
+    sealed class DelugeParams{
+        @Serializable
+        object Empty: DelugeParams()
+        @Serializable
+        data class Value(val value: String): DelugeParams()
+    }
+}
