@@ -23,32 +23,29 @@ class DelugeApiService(private val httpClient: HttpClient) {
     fun login(): Flow<String> {
         return flow {
             HttpClient().use {
-                val response = httpClient.get<String> {
+                /*     val response = httpClient.get<String> {
+                       url {
+                           takeFrom("https://en.wikipedia.org/wiki/Main_Page")
+                       }
+                   }
+                   emit(response)
+               }
+               */
+
+                val response = httpClient.post<String>{
                     url {
-                        takeFrom("https://en.wikipedia.org/wiki/Main_Page")
+                        takeFrom("http://192.168.1.144:8112/json")
                     }
+                    body = DelugeLoginRequestDto(
+                        method = "auth.login",
+                        params = "[0ipshahto]",
+                        id = "1"
+                    )
                 }
+
                 emit(response)
             }
         }
-
-        /* val response = httpClient.request<HttpResponse>(
-             url = URLBuilder("https://en.wikipedia.org/wiki/Main_Page").build()
-         ) {
-             method = HttpMethod.Get
-         }*/
-
-        /* val response = httpClient.post<HttpResponse>(
-             url = URLBuilder(host = BASE_URL, port = 8112).build()
-         ) {
-             body = DelugeLoginRequestDto(
-                 method = "auth.login",
-                 params = "[0ipshahto]",
-                 id = "1"
-             )
-         }
- */
-
     }
 
     private fun HttpRequestBuilder.apiUrl() {
@@ -58,4 +55,5 @@ class DelugeApiService(private val httpClient: HttpClient) {
     }
 }
 
-val BASE_URL = "http://192.168.1.144"
+val BASE_URL_WIFI = "http://dnovoa20.duckdns.org"
+val BASE_URL_LOCAL = "http://192.168.1.144"
