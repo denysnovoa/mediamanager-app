@@ -44,6 +44,9 @@ class DelugeFragment : Fragment() {
 
         lifecycleScope.launchWhenStarted {
             viewModel.loginIsVisible.collect { binding.delugeLogin.isVisible = it }
+        }
+
+        lifecycleScope.launchWhenStarted {
             viewModel.showMessage.collect { notifyMessage(it) }
         }
 
@@ -62,6 +65,6 @@ class DelugeFragment : Fragment() {
     }
 
     private fun notifyMessage(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 }
