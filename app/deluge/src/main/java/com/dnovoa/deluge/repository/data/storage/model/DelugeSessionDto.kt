@@ -5,5 +5,5 @@ data class DelugeSessionDto(
     val userSession: DelugeUserSession
 )
 
-inline class DelugeUserId(val id: Int)
-inline class DelugeUserSession(val session: String)
+data class DelugeUserId(val id: Int)
+data class DelugeUserSession(val session: String)

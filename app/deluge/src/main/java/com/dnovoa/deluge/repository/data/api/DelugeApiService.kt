@@ -7,6 +7,7 @@ import com.dnovoa.deluge.repository.data.storage.model.DelugeUserSession
 import io.ktor.client.HttpClient
 import io.ktor.client.request.post
 import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.takeFrom
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +16,7 @@ import kotlinx.coroutines.flow.channelFlow
 class DelugeApiService(private val httpClient: HttpClient) {
 
     @ExperimentalCoroutinesApi
-    fun login(): Flow<DelugeSessionDto> {
+    fun login(): Flow<DelugeSessionDto?> {
         return channelFlow {
             HttpClient().use {
                 val response = httpClient.post<HttpResponse> {
@@ -31,12 +32,16 @@ class DelugeApiService(private val httpClient: HttpClient) {
 
                 val sessionHeaderCookie = response.headers["Set-Cookie"].orEmpty()
 
-                channel.offer(
+                val delugeSession = if (response.status == HttpStatusCode.OK) {
                     DelugeSessionDto(
                         DelugeUserId(1),
                         DelugeUserSession(sessionHeaderCookie)
                     )
-                )
+                } else {
+                    null
+                }
+
+                channel.offer(delugeSession)
             }
         }
     }

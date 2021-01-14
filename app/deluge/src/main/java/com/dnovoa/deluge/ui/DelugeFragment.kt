@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.dnovoa.deluge.databinding.DelugeFragmentBinding
+import com.dnovoa.deluge.di.DelugeServiceLocator
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -19,7 +20,13 @@ class DelugeFragment : Fragment() {
         fun newInstance() = DelugeFragment()
     }
 
-    private val viewModel by viewModels<DelugeViewModel>()
+    private val viewModel by viewModels<DelugeViewModel>(
+        factoryProducer = {
+            DelugeViewModelFactory(
+                DelugeServiceLocator.initDelugeRepository()
+            )
+        }
+    )
 
     private var _binding: DelugeFragmentBinding? = null
     private val binding get() = _binding!!
@@ -41,8 +48,8 @@ class DelugeFragment : Fragment() {
                 viewModel.login()
                     .catch { notifyError(it) }
                     .collect {
-                    binding.message.text = it
-                }
+                        binding.message.text = it?.userSession?.session
+                    }
             }
         }
     }

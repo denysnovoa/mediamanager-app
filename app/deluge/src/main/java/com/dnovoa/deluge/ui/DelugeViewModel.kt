@@ -1,10 +1,9 @@
 package com.dnovoa.deluge.ui
 
 import androidx.lifecycle.ViewModel
-import com.dnovoa.deluge.di.DelugeServiceLocator
+import com.dnovoa.deluge.repository.DelugeRepository
 
-class DelugeViewModel : ViewModel() {
-    private val delugeRepository = DelugeServiceLocator.initDelugeRepository()
+class DelugeViewModel(private val repository: DelugeRepository) : ViewModel() {
 
-    fun login() = delugeRepository.login()
+    fun login() = repository.login()
 }
