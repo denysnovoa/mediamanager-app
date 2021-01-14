@@ -2,6 +2,7 @@ package com.dnovoa.deluge.repository
 
 import com.dnovoa.deluge.repository.data.api.DelugeApiService
 import com.dnovoa.deluge.repository.data.storage.model.DelugeSessionCache
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 
 class DelugeRepository(
@@ -17,5 +18,9 @@ class DelugeRepository(
 
     fun getUserSession() = delugeSessionCache.getSession()
 
-    fun updatedTorrentSpeed(speed: Int) = delugeApiService.updatedTorrentSpeed(speed)
+    fun updatedTorrentSpeed(speed: Int) =
+        delugeSessionCache.getSession()
+            .flatMapConcat {
+            delugeApiService.updatedTorrentSpeed(speed, it!!)
+        }
 }

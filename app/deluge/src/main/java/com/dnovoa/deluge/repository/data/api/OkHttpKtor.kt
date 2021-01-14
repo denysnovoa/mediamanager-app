@@ -2,6 +2,8 @@ package com.dnovoa.deluge.repository.data.api
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.features.cookies.AcceptAllCookiesStorage
+import io.ktor.client.features.cookies.HttpCookies
 import io.ktor.client.features.defaultRequest
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
@@ -21,6 +23,11 @@ val okHttpKtor = HttpClient(CIO) {
     install(Logging) {
         logger = Logger.SIMPLE
         level = LogLevel.BODY
+    }
+
+    install(HttpCookies) {
+        // Will keep an in-memory map with all the cookies from previous requests.
+        storage = AcceptAllCookiesStorage()
     }
 
     defaultRequest {

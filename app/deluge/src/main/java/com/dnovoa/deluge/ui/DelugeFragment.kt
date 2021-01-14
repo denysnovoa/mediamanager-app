@@ -50,6 +50,10 @@ class DelugeFragment : Fragment() {
         binding.delugeLogin.setOnClickListener {
             viewModel.login()
         }
+
+        binding.delugeSpeed.setOnClickListener {
+            viewModel.updatedSpeedDownload(binding.delugeSpeedValue.text.toString().toInt())
+        }
     }
 
     override fun onDestroyView() {

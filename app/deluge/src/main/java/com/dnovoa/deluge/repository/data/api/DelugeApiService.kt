@@ -5,6 +5,7 @@ import com.dnovoa.deluge.repository.data.storage.model.DelugeSessionDto
 import com.dnovoa.deluge.repository.data.storage.model.DelugeUserId
 import com.dnovoa.deluge.repository.data.storage.model.DelugeUserSession
 import io.ktor.client.HttpClient
+import io.ktor.client.request.cookie
 import io.ktor.client.request.post
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
@@ -25,7 +26,7 @@ class DelugeApiService(private val httpClient: HttpClient) {
                     url {
                         takeFrom(BASE_URL_LOCAL)
                     }
-                    body = DelugeRequestDto(
+                    body = DelugeRequestDto.Login(
                         method = "auth.login",
                         params = listOf("0ipshahto"),
                         id = requestId++.toString()
@@ -49,18 +50,27 @@ class DelugeApiService(private val httpClient: HttpClient) {
     }
 
     @ExperimentalCoroutinesApi
-    fun updatedTorrentSpeed(speed: Int): Flow<Boolean> {
+    fun updatedTorrentSpeed(speed: Int, session: DelugeSessionDto): Flow<Boolean> {
         return channelFlow {
             HttpClient().use {
                 val response = httpClient.post<HttpResponse> {
                     url {
                         takeFrom(BASE_URL_LOCAL)
                     }
-                    body = DelugeRequestDto(
+
+                    body = DelugeRequestDto.Config(
                         method = "core.set_config",
-                        params = listOf("{max_upload_speed: $speed}"),
+                        params = listOf(
+                            mapOf(
+                                Pair(
+                                    "max_download_speed",
+                                    speed.toString()
+                                )
+                            )
+                        ),
                         id = requestId++.toString()
                     )
+                    cookie("Set-Cookie", session.userSession.session)
                 }
 
                 channel.offer(response.status == HttpStatusCode.OK)
