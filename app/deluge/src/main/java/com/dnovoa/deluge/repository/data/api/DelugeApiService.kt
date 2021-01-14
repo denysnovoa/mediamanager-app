@@ -14,15 +14,21 @@ import io.ktor.http.URLBuilder
 import io.ktor.http.takeFrom
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.url
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class DelugeApiService(private val httpClient: HttpClient) {
 
-    suspend fun login(): String {
-        val response = httpClient.get<String> {
-            url {
-                takeFrom("https://en.wikipedia.org/wiki/Main_Page")
+    fun login(): Flow<String> {
+        return flow {
+            HttpClient().use {
+                val response = httpClient.get<String> {
+                    url {
+                        takeFrom("https://en.wikipedia.org/wiki/Main_Page")
+                    }
+                }
+                emit(response)
             }
         }
 
@@ -42,9 +48,7 @@ class DelugeApiService(private val httpClient: HttpClient) {
              )
          }
  */
-        httpClient.close()
 
-        return response.toString()
     }
 
     private fun HttpRequestBuilder.apiUrl() {

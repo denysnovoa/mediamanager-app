@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.dnovoa.deluge.databinding.DelugeFragmentBinding
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class DelugeFragment : Fragment() {
@@ -36,8 +37,9 @@ class DelugeFragment : Fragment() {
 
         binding.delugeLogin.setOnClickListener {
             lifecycleScope.launch {
-                val text = viewModel.login()
-                binding.message.text = text
+                viewModel.login().collect {
+                    binding.message.setText(it)
+                }
             }
         }
     }

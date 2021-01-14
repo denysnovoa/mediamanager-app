@@ -4,5 +4,5 @@ import com.dnovoa.deluge.repository.data.api.DelugeApiService
 
 class DelugeRepository(private val delugeApiService: DelugeApiService) {
 
-    suspend fun login() = delugeApiService.login()
+    fun login() = delugeApiService.login()
 }
