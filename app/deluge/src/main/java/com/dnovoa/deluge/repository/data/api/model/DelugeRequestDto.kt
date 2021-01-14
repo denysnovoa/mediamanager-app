@@ -9,23 +9,23 @@ sealed class DelugeRequestDto {
 
     @Serializable
     data class Login(
-        override val method: String = "auth.login",
+        override val method: String,
         override val id: String,
         val params: List<String>
     ) : DelugeRequestDto()
 
     @Serializable
     data class SetConfig(
-        override val method: String = "core.set_config",
+        override val method: String,
         override val id: String,
         val params: List<Map<String, String>>
     ) : DelugeRequestDto()
 
     @Serializable
     data class Ui(
-        override val method: String = "web.update_ui",
+        override val method: String,
         override val id: String,
-        val params: Array<List<String>>
+        val params: ArrayList<List<String>>
     ) : DelugeRequestDto()
 }
 
