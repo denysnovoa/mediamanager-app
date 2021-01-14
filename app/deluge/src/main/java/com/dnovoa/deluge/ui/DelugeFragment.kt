@@ -43,13 +43,12 @@ class DelugeFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         lifecycleScope.launchWhenStarted {
-            viewModel.loginIsVisible.collect {
-                binding.delugeLogin.isVisible = it
-            }
+            viewModel.loginIsVisible.collect { binding.delugeLogin.isVisible = it }
+            viewModel.showMessage.collect { notifyMessage(it) }
         }
 
         binding.delugeLogin.setOnClickListener {
-                viewModel.login()
+            viewModel.login()
         }
     }
 
@@ -58,7 +57,7 @@ class DelugeFragment : Fragment() {
         _binding = null
     }
 
-    private fun notifyError(exception: Throwable) {
-        Toast.makeText(requireContext(), exception.message.orEmpty(), Toast.LENGTH_LONG).show()
+    private fun notifyMessage(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 }

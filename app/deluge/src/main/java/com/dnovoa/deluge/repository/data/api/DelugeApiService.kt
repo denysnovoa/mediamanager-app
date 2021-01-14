@@ -1,6 +1,6 @@
 package com.dnovoa.deluge.repository.data.api
 
-import com.dnovoa.deluge.repository.data.api.model.DelugeLoginRequestDto
+import com.dnovoa.deluge.repository.data.api.model.DelugeRequestDto
 import com.dnovoa.deluge.repository.data.storage.model.DelugeSessionDto
 import com.dnovoa.deluge.repository.data.storage.model.DelugeUserId
 import com.dnovoa.deluge.repository.data.storage.model.DelugeUserSession
@@ -15,18 +15,20 @@ import kotlinx.coroutines.flow.channelFlow
 
 class DelugeApiService(private val httpClient: HttpClient) {
 
+    var requestId = 0
+
     @ExperimentalCoroutinesApi
     fun login(): Flow<DelugeSessionDto?> {
         return channelFlow {
             HttpClient().use {
                 val response = httpClient.post<HttpResponse> {
                     url {
-                        takeFrom("http://192.168.1.144:8112/json")
+                        takeFrom(BASE_URL_LOCAL)
                     }
-                    body = DelugeLoginRequestDto(
+                    body = DelugeRequestDto(
                         method = "auth.login",
                         params = listOf("0ipshahto"),
-                        id = "1"
+                        id = requestId++.toString()
                     )
                 }
 
@@ -34,7 +36,7 @@ class DelugeApiService(private val httpClient: HttpClient) {
 
                 val delugeSession = if (response.status == HttpStatusCode.OK) {
                     DelugeSessionDto(
-                        DelugeUserId(1),
+                        DelugeUserId(requestId),
                         DelugeUserSession(sessionHeaderCookie)
                     )
                 } else {
@@ -45,7 +47,27 @@ class DelugeApiService(private val httpClient: HttpClient) {
             }
         }
     }
+
+    @ExperimentalCoroutinesApi
+    fun updatedTorrentSpeed(speed: Int): Flow<Boolean> {
+        return channelFlow {
+            HttpClient().use {
+                val response = httpClient.post<HttpResponse> {
+                    url {
+                        takeFrom(BASE_URL_LOCAL)
+                    }
+                    body = DelugeRequestDto(
+                        method = "core.set_config",
+                        params = listOf("{max_upload_speed: $speed}"),
+                        id = requestId++.toString()
+                    )
+                }
+
+                channel.offer(response.status == HttpStatusCode.OK)
+            }
+        }
+    }
 }
 
 val BASE_URL_WIFI = "https://dnovoa20.duckdns.org"
-val BASE_URL_LOCAL = "https://192.168.1.144"
+val BASE_URL_LOCAL = "http://192.168.1.144:8112/json"

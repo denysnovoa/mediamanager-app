@@ -12,6 +12,9 @@ class DelugeViewModel(private val repository: DelugeRepository) : ViewModel() {
     private val _loginIsVisible = MutableStateFlow(false)
     val loginIsVisible: MutableStateFlow<Boolean> get() = _loginIsVisible
 
+    private val _showMessage = MutableStateFlow("")
+    val showMessage: MutableStateFlow<String> get() = _showMessage
+
     init {
         viewModelScope.launch {
             repository.getUserSession().collect { delugeUserSession ->
@@ -26,6 +29,13 @@ class DelugeViewModel(private val repository: DelugeRepository) : ViewModel() {
                 .collect { delugeUserSession ->
                     _loginIsVisible.value = delugeUserSession == null
                 }
+        }
+    }
+
+    fun updatedSpeedDownload(speed: Int) {
+        viewModelScope.launch {
+            repository.updatedTorrentSpeed(speed)
+                .collect { _showMessage.value = it.toString() }
         }
     }
 }

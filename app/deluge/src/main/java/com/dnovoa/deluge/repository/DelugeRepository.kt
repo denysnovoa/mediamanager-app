@@ -16,4 +16,6 @@ class DelugeRepository(
         }
 
     fun getUserSession() = delugeSessionCache.getSession()
+
+    fun updatedTorrentSpeed(speed: Int) = delugeApiService.updatedTorrentSpeed(speed)
 }
