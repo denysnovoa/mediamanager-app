@@ -21,7 +21,7 @@ class DelugeApiService(private val httpClient: HttpClient) {
                     }
                     body = DelugeLoginRequestDto(
                         method = "auth.login",
-                        params = "[0ipshahto]",
+                        params = listOf("0ipshahto"),
                         id = "1"
                     )
                 }
@@ -38,5 +38,5 @@ class DelugeApiService(private val httpClient: HttpClient) {
     }
 }
 
-val BASE_URL_WIFI = "http://dnovoa20.duckdns.org"
-val BASE_URL_LOCAL = "http://192.168.1.144"
+val BASE_URL_WIFI = "https://dnovoa20.duckdns.org"
+val BASE_URL_LOCAL = "https://192.168.1.144"

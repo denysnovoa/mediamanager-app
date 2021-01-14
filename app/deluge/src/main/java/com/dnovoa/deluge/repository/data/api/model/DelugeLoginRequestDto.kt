@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class DelugeLoginRequestDto(
     val method: String,
-    val params: String,
+    val params: List<String>,
     val id: String
 )
