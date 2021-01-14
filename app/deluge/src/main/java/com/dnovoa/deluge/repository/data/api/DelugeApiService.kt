@@ -1,6 +1,7 @@
 package com.dnovoa.deluge.repository.data.api
 
 import com.dnovoa.deluge.repository.data.api.model.DelugeRequestDto
+import com.dnovoa.deluge.repository.data.api.model.DelugeResponseDto
 import com.dnovoa.deluge.repository.data.storage.model.DelugeSessionDto
 import com.dnovoa.deluge.repository.data.storage.model.DelugeUserId
 import com.dnovoa.deluge.repository.data.storage.model.DelugeUserSession
@@ -84,7 +85,7 @@ class DelugeApiService(private val httpClient: HttpClient) {
         }
     }
 
-    fun getUiInfo(session: DelugeSessionDto): Flow<String> {
+    fun getUiInfo(session: DelugeSessionDto): Flow<DelugeResponseDto> {
         return channelFlow {
 
             val body = DelugeRequestDto.Ui(
@@ -125,9 +126,9 @@ class DelugeApiService(private val httpClient: HttpClient) {
                 id = requestId++.toString()
             )
 
-            val response = callApi<HttpResponse>(session, body)
+            val response = callApi<DelugeResponseDto>(session, body)
 
-            channel.offer(response.content.toString())
+            channel.offer(response)
         }
     }
 }

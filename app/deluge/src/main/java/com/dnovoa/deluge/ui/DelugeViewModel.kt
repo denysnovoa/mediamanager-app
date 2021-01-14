@@ -3,6 +3,7 @@ package com.dnovoa.deluge.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dnovoa.deluge.repository.DelugeRepository
+import com.dnovoa.deluge.repository.data.api.model.DelugeStatsDto
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -50,8 +51,14 @@ class DelugeViewModel(private val repository: DelugeRepository) : ViewModel() {
         viewModelScope.launch {
             repository.getUiInfo()
                 .catch { _showMessage.value = it.stackTraceToString() }
-                .collect {
-                    _showMessage.value = it
+                .collect { delugeResponseDto ->
+                    val downloadRate: Double = delugeResponseDto.stats.download_rate
+
+                    _showMessage.value = when {
+                        downloadRate <= 1000 -> { (downloadRate / 1000).toString() + "Kib/s" }
+                        downloadRate <= 10000 -> { (downloadRate / 10000).toString() + "Mb/s" }
+                        else -> { (downloadRate / 100000).toString() + "Gb/s" }
+                    }
                 }
         }
     }
