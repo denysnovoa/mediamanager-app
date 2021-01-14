@@ -3,36 +3,19 @@ package com.dnovoa.deluge.repository.data.api
 import com.dnovoa.deluge.repository.data.api.model.DelugeLoginRequestDto
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.get
 import io.ktor.client.request.post
-import io.ktor.client.request.request
-import io.ktor.client.statement.HttpResponse
-import io.ktor.content.TextContent
-import io.ktor.http.ContentType
-import io.ktor.http.HttpMethod
-import io.ktor.http.URLBuilder
 import io.ktor.http.takeFrom
-import io.ktor.util.KtorExperimentalAPI
-import io.ktor.util.url
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.channelFlow
 
 class DelugeApiService(private val httpClient: HttpClient) {
 
+    @ExperimentalCoroutinesApi
     fun login(): Flow<String> {
-        return flow {
+        return channelFlow {
             HttpClient().use {
-                /*     val response = httpClient.get<String> {
-                       url {
-                           takeFrom("https://en.wikipedia.org/wiki/Main_Page")
-                       }
-                   }
-                   emit(response)
-               }
-               */
-
-                val response = httpClient.post<String>{
+                val response = httpClient.post<String> {
                     url {
                         takeFrom("http://192.168.1.144:8112/json")
                     }
@@ -43,7 +26,7 @@ class DelugeApiService(private val httpClient: HttpClient) {
                     )
                 }
 
-                emit(response)
+                channel.offer(response)
             }
         }
     }
