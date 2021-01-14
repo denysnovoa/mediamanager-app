@@ -54,6 +54,10 @@ class DelugeFragment : Fragment() {
             viewModel.login()
         }
 
+        binding.delugeRefreshUi.setOnClickListener {
+            viewModel.refreshUI()
+        }
+
         binding.delugeSpeed.setOnClickListener {
             viewModel.updatedSpeedDownload(binding.delugeSpeedValue.text.toString().toInt())
         }

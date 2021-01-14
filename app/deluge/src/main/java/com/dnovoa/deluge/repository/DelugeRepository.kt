@@ -21,6 +21,12 @@ class DelugeRepository(
     fun updatedTorrentSpeed(speed: Int) =
         delugeSessionCache.getSession()
             .flatMapConcat {
-            delugeApiService.updatedTorrentSpeed(speed, it!!)
-        }
+                delugeApiService.updatedTorrentSpeed(speed, it!!)
+            }
+
+    fun getUiInfo() =
+        delugeSessionCache.getSession()
+            .flatMapConcat {
+                delugeApiService.getUiInfo(it!!)
+            }
 }

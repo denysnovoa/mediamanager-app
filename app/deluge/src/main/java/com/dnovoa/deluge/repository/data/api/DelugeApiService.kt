@@ -27,7 +27,6 @@ class DelugeApiService(private val httpClient: HttpClient) {
                         takeFrom(BASE_URL_LOCAL)
                     }
                     body = DelugeRequestDto.Login(
-                        method = "auth.login",
                         params = listOf("0ipshahto"),
                         id = requestId++.toString()
                     )
@@ -52,29 +51,80 @@ class DelugeApiService(private val httpClient: HttpClient) {
     @ExperimentalCoroutinesApi
     fun updatedTorrentSpeed(speed: Int, session: DelugeSessionDto): Flow<Boolean> {
         return channelFlow {
-            HttpClient().use {
-                val response = httpClient.post<HttpResponse> {
-                    url {
-                        takeFrom(BASE_URL_LOCAL)
-                    }
-
-                    body = DelugeRequestDto.Config(
-                        method = "core.set_config",
-                        params = listOf(
-                            mapOf(
-                                Pair(
-                                    "max_download_speed",
-                                    speed.toString()
-                                )
-                            )
-                        ),
-                        id = requestId++.toString()
+            val body = DelugeRequestDto.SetConfig(
+                params = listOf(
+                    mapOf(
+                        Pair(
+                            "max_download_speed",
+                            speed.toString()
+                        )
                     )
-                    cookie("Set-Cookie", session.userSession.session)
-                }
+                ),
+                id = requestId++.toString()
+            )
 
-                channel.offer(response.status == HttpStatusCode.OK)
+            val response = callApi<HttpResponse>(session, body)
+
+            channel.offer(response.status == HttpStatusCode.OK)
+        }
+    }
+
+    private suspend inline fun <reified T> callApi(
+        session: DelugeSessionDto,
+        request: DelugeRequestDto
+    ): T = HttpClient().use {
+        httpClient.post {
+            url {
+                takeFrom(BASE_URL_LOCAL)
             }
+            body = request
+            cookie("Set-Cookie", session.userSession.session)
+        }
+    }
+
+    fun getUiInfo(session: DelugeSessionDto): Flow<String> {
+        return channelFlow {
+
+            val body = DelugeRequestDto.Ui(
+                params = arrayOf(
+                    listOf(
+                        "queue",
+                        "name",
+                        "total_wanted",
+                        "state",
+                        "progress",
+                        "num_seeds",
+                        "total_seeds",
+                        "num_peers",
+                        "total_peers",
+                        "download_payload_rate",
+                        "upload_payload_rate",
+                        "eta",
+                        "ratio",
+                        "distributed_copies",
+                        "is_auto_managed",
+                        "time_added",
+                        "tracker_host",
+                        "download_location",
+                        "last_seen_complete",
+                        "total_done",
+                        "total_uploaded",
+                        "max_download_speed",
+                        "max_upload_speed",
+                        "seeds_peers_ratio",
+                        "total_remaining",
+                        "completed_time",
+                        "time_since_transfer",
+                        "label"
+                    ),
+                    listOf("{}")
+                ),
+                id = requestId++.toString()
+            )
+
+            val response = callApi<HttpResponse>(session, body)
+
+            channel.offer(response.toString())
         }
     }
 }

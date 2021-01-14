@@ -45,4 +45,14 @@ class DelugeViewModel(private val repository: DelugeRepository) : ViewModel() {
                 }
         }
     }
+
+    fun refreshUI() {
+        viewModelScope.launch {
+            repository.getUiInfo()
+                .catch { _showMessage.value = it.stackTraceToString() }
+                .collect {
+                    _showMessage.value = it
+                }
+        }
+    }
 }
